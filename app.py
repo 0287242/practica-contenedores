@@ -155,8 +155,10 @@ def process_single_blob(bucket_name, blob_name, limite=1000, chunksize=500):
                 x = _extract_x(row)
 
                 pred = model.predict_one(x)
+                if pred is not None and np.isfinite(pred):
+                    pred_eval = float(np.clip(pred, 2, 200))
+                    metric.update(y, pred_eval)
                 model.learn_one(x, y)
-                metric.update(y, pred)
 
                 count += 1
 
